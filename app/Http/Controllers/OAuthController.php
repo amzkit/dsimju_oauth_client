@@ -35,7 +35,7 @@ class OAuthController extends Controller
         $user = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer '.$accessToken,
-        ])->get(config("oauth.request_user_url"));
+        ])->get(config('oauth.request_user_url'));
 
         $user_tmp = $user->json();
         //dd($user->json());
@@ -45,7 +45,7 @@ class OAuthController extends Controller
         $user['name'] = $user_tmp['name'];
         $user['email'] = $user_tmp['email'];
 
-        $user = \App\Models\User::updateOrCreate($user);
+        $user = \App\Models\User::firstOrCreate(['email'=>$user['email']],$user);
 
         \Auth::login($user);
 
